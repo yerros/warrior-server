@@ -42,4 +42,46 @@ router.post("/", adminMiddleware, async (req, res) => {
   res.send(merpati);
 });
 
+// @route        PUT /merpati/:shortid
+// @desc         edit data pigeon
+// @access       private
+router.put("/:shortid", adminMiddleware, async (req, res) => {
+  const id = req.params.shortid;
+  const body = req.body;
+  try {
+    if (body) {
+      let merpati = await Pigeon.findOneAndUpdate(
+        { shortid: id },
+        { $set: body }
+      );
+      res.send(merpati);
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ msg: "Server error" });
+  }
+});
+
+// @route        DELETE /merpati/:shortid
+// @desc         Delete Pigeon
+// @access       private
+router.delete("/:shortid", adminMiddleware, async (req, res) => {
+  try {
+    const deleted = await Pigeon.findOneAndDelete({
+      shortid: req.params.shortid,
+    });
+    if (!deleted) {
+      return res.status(404).json({
+        message: "property not found",
+      });
+    }
+    res.status(200).json({
+      msg: "Delete Success",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("Server Error 2");
+  }
+});
+
 module.exports = router;
