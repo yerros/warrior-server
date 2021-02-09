@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const mongoose_fuzzy_searching = require("mongoose-fuzzy-searching");
 
 const pigeonSchema = mongoose.Schema({
   createAt: {
@@ -43,5 +44,9 @@ const pigeonSchema = mongoose.Schema({
     ref: "user",
   },
 });
+
+pigeonSchema.index({ name: "text", ring: "text" });
+
+pigeonSchema.plugin(mongoose_fuzzy_searching, { fields: ["ring", "name"] });
 
 module.exports = mongoose.model("pigeon", pigeonSchema);
